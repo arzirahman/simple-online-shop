@@ -42,12 +42,16 @@ services:
       - "27017:27017"
     environment:
       - MONGO_INITDB_DATABASE=oltpdb
+    volumes:
+      - ./database/oltp.init.js:/docker-entrypoint-initdb.d/oltp.init.js
   postgres:
     container_name: olapdb
     restart: always
     image: postgres
     ports:
-      - "54321:5432"
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: olapdb
+    volumes:
+      - ./database/olapdb.init.sql:/docker-entrypoint-initdb.d/olapdb.init.sql
