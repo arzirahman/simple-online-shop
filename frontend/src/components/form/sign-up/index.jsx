@@ -49,7 +49,7 @@ export default function SignUpForm() {
                 values={form.values.confirmPassword}
                 errorMessage={form.errors.confirmPassword}
             />
-            <button type="submit" className="w-full mt-4 btn btn-primary">Sign Up</button>
+            <button type="submit" className="w-full mt-4 btn btn-neutral">Sign Up</button>
         </form>
     )
 }

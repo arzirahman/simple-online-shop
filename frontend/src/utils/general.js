@@ -4,10 +4,6 @@ export const formatPrice = (price) => {
     }).format(price)
 }
 
-export const formatRating = (rating) => {
-    return `${rating.toLocaleString('id-ID', { minimumFractionDigits: 1 })}`.replace(",", ".")
-}
-
 export const formatSold = (sold) => {
     return sold >= 1000 ? `${(sold / 1000).toFixed(1)}K+` : sold
 }

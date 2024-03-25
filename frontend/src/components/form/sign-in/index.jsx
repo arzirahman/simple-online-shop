@@ -1,7 +1,15 @@
 import { useFormik } from "formik";
 import Input from "../../input";
+import { axios } from "../../../utils/axios";
+import { useState } from "react";
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 
 export default function SignInForm() {
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
+
     const form = useFormik({
         initialValues: {
             username: '', password: ''
@@ -10,10 +18,27 @@ export default function SignInForm() {
             const errors = {}
             if (!values.username) errors.username = "Username is required"
             if (!values.password) errors.password = "Password is required"
+            if (values.password.length < 6) errors.password = "Password must be at least 6 characters long"
             return errors;
         },
         onSubmit: (values) => {
-            console.log(values)
+            if (!loading) {
+                setErrorMessage('')
+                setLoading(true)
+                axios()
+                .post('/user/sign-in', values)
+                .then((response) => {
+                    Cookies.set('token', response.data?.data?.token ?? '', { expires: 1 });
+                    navigate('/')
+                })
+                .catch((error) => {
+                    if (error?.response?.data?.message) setErrorMessage(error?.response?.data?.message)
+                    else setErrorMessage('Internal Server Error')
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+            }
         }
     })
     
@@ -37,7 +62,14 @@ export default function SignInForm() {
                 values={form.values.password}
                 errorMessage={form.errors.password}
             />
-            <button type="submit" className="w-full mt-4 btn btn-primary">Sign In</button>
+            {errorMessage && <span className="mt-4 text-sm text-error">{errorMessage}</span>}
+            <button type="submit" className="w-full mt-4 btn btn-neutral">
+                {loading && <>
+                    <span className="loading loading-spinner"></span>
+                    loading
+                </>}
+                {!loading && <>Sign In</>}
+            </button>
         </form>
     )
 }

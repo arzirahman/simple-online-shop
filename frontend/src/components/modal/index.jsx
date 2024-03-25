@@ -22,3 +22,9 @@ export const openModal = (id) => {
         document.getElementById(id).showModal()
     }
 }
+
+export const closeModal = (id) => {
+    if (document) {
+        document.getElementById(id).close()
+    }
+}
