@@ -30,9 +30,9 @@ export default function Navbar() {
     }
 
     useEffect(() => {
+        closeModal(modalId)
         const token = Cookies.get('token');
         if (token) {
-            closeModal(modalId)
             const decodedToken = jwtDecode(token);
             if (decodedToken) setUserDetail(decodedToken)
         } else {

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import onlineshop.backend.models.UserDetail;
-import onlineshop.backend.models.Users;
-import onlineshop.backend.repositories.UserRepository;
+import onlineshop.backend.models.olap.Users;
+import onlineshop.backend.repositories.olap.UserRepository;
 
 @Service
 public class UserDetailService implements UserDetailsService {

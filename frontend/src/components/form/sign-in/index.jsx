@@ -4,10 +4,11 @@ import { axios } from "../../../utils/axios";
 import { useState } from "react";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import Alert from "../../alert";
 
 export default function SignInForm() {
+    const [alert, setAlert] = useState({ visibility: false, type: 'alert-success', message: 'Sign Up Success' });
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const form = useFormik({
@@ -23,7 +24,7 @@ export default function SignInForm() {
         },
         onSubmit: (values) => {
             if (!loading) {
-                setErrorMessage('')
+                setAlert(prev => ({...prev, visibility: false}))
                 setLoading(true)
                 axios()
                 .post('/user/sign-in', values)
@@ -32,8 +33,11 @@ export default function SignInForm() {
                     navigate('/')
                 })
                 .catch((error) => {
-                    if (error?.response?.data?.message) setErrorMessage(error?.response?.data?.message)
-                    else setErrorMessage('Internal Server Error')
+                    if (error?.response?.data?.message) {
+                        setAlert({ visibility: true, type: 'alert-error', message: error?.response?.data?.message })
+                    } else {
+                        setAlert({ visibility: true, type: 'alert-error', message: 'Internal Server Error' })
+                    }
                 })
                 .finally(() => {
                     setLoading(false)
@@ -44,6 +48,7 @@ export default function SignInForm() {
     
     return (
         <form onSubmit={form.handleSubmit} className="flex flex-col gap-2">
+            {alert.visibility && <Alert message={alert.message} type={alert.type} />}
             <Input 
                 label={'Username'} 
                 placeholder="Username..." 
@@ -62,7 +67,6 @@ export default function SignInForm() {
                 values={form.values.password}
                 errorMessage={form.errors.password}
             />
-            {errorMessage && <span className="mt-4 text-sm text-error">{errorMessage}</span>}
             <button type="submit" className="w-full mt-4 btn btn-neutral">
                 {loading && <>
                     <span className="loading loading-spinner"></span>

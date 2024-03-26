@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import onlineshop.backend.dtos.responses.ErrorResponseDTO;
 
@@ -19,12 +21,23 @@ public class ExceptionHandling {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleAllExceptions(Exception ex) {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-        errorResponseDTO.setMessage("Internal Server Error");
+        errorResponseDTO.setMessage(ex.getMessage());
         errorResponseDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorResponseDTO.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.name());
-        errorResponseDTO.setErrors(ex.getMessage());
+        errorResponseDTO.setErrors(null);
         
         return ResponseEntity.internalServerError().body(errorResponseDTO);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAllExceptions(NoHandlerFoundException ex) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+        errorResponseDTO.setMessage(ex.getMessage());
+        errorResponseDTO.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorResponseDTO.setStatus(HttpStatus.NOT_FOUND.name());
+        errorResponseDTO.setErrors(null);
+        
+        return ((BodyBuilder) ResponseEntity.notFound()).body(errorResponseDTO);
     }
 
     @ExceptionHandler(AuthenticationException.class)
@@ -57,10 +70,10 @@ public class ExceptionHandling {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-        errorResponseDTO.setMessage("Request Failed");
+        errorResponseDTO.setMessage(ex.getMessage().split(":")[0]);
         errorResponseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorResponseDTO.setStatus(HttpStatus.BAD_REQUEST.name());
-        errorResponseDTO.setErrors(ex.getMessage());
+        errorResponseDTO.setErrors(null);
 
         return ResponseEntity.badRequest().body(errorResponseDTO);
     }

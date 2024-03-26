@@ -1,12 +1,14 @@
-package onlineshop.backend.models;
+package onlineshop.backend.models.olap;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,28 +20,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Products {
+public class Users {
     @Id
     @Column
-    private UUID productId;
+    private UUID userId;
+
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(nullable = false)
-    private String name;
+    private String password;
 
     @Column
-    private String image;
-
-    @Column
-    private BigDecimal rating;
-
-    @Column(nullable = false)
-    private Integer price;
-
-    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.userId = UUID.randomUUID();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 
     @PreUpdate
     public void preUpdate() {

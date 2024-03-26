@@ -22,8 +22,8 @@ import onlineshop.backend.dtos.responses.BodyResponseDTO;
 import onlineshop.backend.dtos.responses.ErrorResponseDTO;
 import onlineshop.backend.dtos.responses.SignInResponseDTO;
 import onlineshop.backend.models.UserDetail;
-import onlineshop.backend.models.Users;
-import onlineshop.backend.repositories.UserRepository;
+import onlineshop.backend.models.olap.Users;
+import onlineshop.backend.repositories.olap.UserRepository;
 import onlineshop.backend.utils.JwtUtil;
 
 @Service
@@ -108,7 +108,7 @@ public class UserService {
         BodyResponseDTO bodyResponseDTO = BodyResponseDTO.builder()
             .statusCode(HttpStatus.OK.value())
             .status(HttpStatus.OK.name())
-            .message("Sign Up Success")
+            .message("Sign In Success")
             .data(signInResponseDTO)
             .build();
 

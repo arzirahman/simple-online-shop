@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import onlineshop.backend.dtos.requests.ProductRequestDTO;
 import onlineshop.backend.dtos.responses.BodyResponseDTO;
-import onlineshop.backend.models.Products;
-import onlineshop.backend.repositories.ProductRepository;
+import onlineshop.backend.dtos.responses.ProductResponseDTO;
+import onlineshop.backend.repositories.olap.ProductRepository;
 
 @Service
 public class ProductService {
@@ -20,7 +20,7 @@ public class ProductService {
     public ResponseEntity<BodyResponseDTO> getProducts(ProductRequestDTO request) {
         String search = request.getSearch() == null ? "" : request.getSearch();
 
-        List<Products> products = productRepository.findAllProduct(search);
+        List<ProductResponseDTO> products = productRepository.findAllProduct(search);
 
         BodyResponseDTO bodyResponseDTO = BodyResponseDTO.builder()
             .statusCode(HttpStatus.OK.value())
